@@ -1,0 +1,47 @@
+{
+  "name": "@dillion-ai/open-agent",
+  "version": "0.1.0",
+  "description": "Provider-agnostic agent SDK with sandboxed code execution",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "scripts"],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsup --watch"
+  },
+  "peerDependencies": {
+    "ai": ">=6.0.0"
+  },
+  "dependencies": {
+    "@daytonaio/sdk": "^0.150.0",
+    "gray-matter": "^4.0.3",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@openrouter/ai-sdk-provider": "^2.3.0",
+    "@types/node": "^22.0.0",
+    "ai": "^6.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.7.0",
+    "xlsx": "^0.18.5"
+  },
+  "homepage": "https://dillion.ai",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dillion-ai/open-agent.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dillion-ai/open-agent/issues"
+  },
+  "license": "MIT"
+}
