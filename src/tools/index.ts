@@ -6,6 +6,7 @@ import { createWriteTool } from './write.js';
 import { createEditTool } from './edit.js';
 import { createGlobTool } from './glob.js';
 import { createGrepTool } from './grep.js';
+import { createPythonTool } from './python.js';
 
 const toolRegistry: Record<BuiltInToolName, ToolFactory> = {
   bash: createBashTool,
@@ -14,6 +15,7 @@ const toolRegistry: Record<BuiltInToolName, ToolFactory> = {
   edit: createEditTool,
   glob: createGlobTool,
   grep: createGrepTool,
+  python: createPythonTool,
 };
 
 export function resolveTools(
@@ -39,4 +41,5 @@ export {
   createEditTool,
   createGlobTool,
   createGrepTool,
+  createPythonTool,
 };

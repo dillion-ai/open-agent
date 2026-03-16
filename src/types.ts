@@ -2,7 +2,7 @@ import type { LanguageModel, ToolSet } from 'ai';
 import type { Sandbox } from '@daytonaio/sdk';
 import type { BuiltInSkillName } from './skills/loader.js';
 
-export type BuiltInToolName = 'bash' | 'read' | 'write' | 'edit' | 'glob' | 'grep';
+export type BuiltInToolName = 'bash' | 'read' | 'write' | 'edit' | 'glob' | 'grep' | 'python';
 
 export interface SandboxConfig {
   apiKey?: string;
