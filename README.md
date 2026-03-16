@@ -40,6 +40,7 @@ const result = await agent.generate({
 });
 
 console.log(result.text);
+
 await agent.destroy();
 ```
 
@@ -71,7 +72,7 @@ The SDK doesn't impose prompt templates, memory systems, RAG pipelines, or agent
 
 ## Skills
 
-Skills are markdown files that get injected into the system prompt. They teach the agent domain-specific workflows without requiring code changes. The SDK ships a built-in `xlsx` skill; you can add your own.
+Skills are markdown files that get injected into the system prompt. They teach the agent domain-specific workflows without requiring code changes. Skills are opt-in: unless you pass `skills`, no skill prompt or `use_skill` tool is added. The SDK ships a built-in `xlsx` skill; you can add your own.
 
 ```ts
 const agent = createAgent({
@@ -121,10 +122,11 @@ createAgent({
     apiKey: "",
     apiUrl: "",             //   Custom API URL (optional)
     target: "",             //   Target region (optional)
+    language: "typescript", //   Sandbox language/runtime (optional)
     instance: sandbox,      //   Reuse an existing Sandbox (optional)
   },
   skills: {                 // Optional
-    builtins: true,         //   true | false | string[]
+    builtins: false,        //   true | false | string[]
     custom: [],             //   Paths to .md files or directories
   },
   maxSteps: 30,             // Max tool-use loop iterations

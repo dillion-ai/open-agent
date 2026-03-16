@@ -8,6 +8,8 @@ export interface SandboxConfig {
   apiKey?: string;
   apiUrl?: string;
   target?: string;
+  /** Sandbox language/runtime. Default: 'typescript' */
+  language?: string;
   /** Pass an existing Sandbox instance to reuse it instead of creating a new one */
   instance?: Sandbox;
 }
@@ -19,24 +21,37 @@ export interface Skill {
 }
 
 export interface SkillsConfig {
-  /** Which built-in skills to enable. `true` = all, `false` = none, or an array of names. Default: true */
+  /** Which built-in skills to enable. `true` = all, `false` = none, or an array of names. Default: false */
   builtins?: BuiltInSkillName[] | boolean;
   /** Paths to custom .md skill files or directories containing them */
   custom?: string[];
 }
 
-export interface RunOptions {
-  prompt?: string;
-  messages?: Array<{ role: 'user' | 'assistant'; content: string }>;
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface PromptRunOptions {
+  prompt: string;
+  messages?: never;
   abortSignal?: AbortSignal;
 }
+
+export interface MessageRunOptions {
+  prompt?: never;
+  messages: ChatMessage[];
+  abortSignal?: AbortSignal;
+}
+
+export type RunOptions = PromptRunOptions | MessageRunOptions;
 
 export interface OpenAgentConfig {
   model: LanguageModel;
   instructions?: string;
   tools?: BuiltInToolName[];
   sandbox: SandboxConfig;
-  /** Skill configuration. Pass paths array for custom-only (backwards compat), or a SkillsConfig object. */
+  /** Skill configuration. Skills are opt-in; pass paths array for custom-only (backwards compat), or a SkillsConfig object. */
   skills?: string[] | SkillsConfig;
   maxSteps?: number;
   cwd?: string;

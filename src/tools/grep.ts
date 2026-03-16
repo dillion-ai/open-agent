@@ -22,18 +22,24 @@ export const createGrepTool: ToolFactory = (getSandbox: GetSandbox, cwd: string)
       const sandbox = await getSandbox();
       const searchPath = resolvePath(path ?? '.', cwd);
 
-      let cmd = `grep -rn '${pattern.replace(/'/g, "'\\''")}' '${searchPath}'`;
+      // Write pattern to a temp file to avoid shell injection
+      const patternFile = '/tmp/.grep_pattern_' + Date.now();
+      await sandbox.fs.uploadFile(Buffer.from(pattern, 'utf-8'), patternFile);
+
+      let cmd = `grep -rn -f ${patternFile} '${searchPath.replace(/'/g, "'\\''")}'`;
       if (include) {
-        cmd += ` --include='${include}'`;
+        cmd += ` --include='${include.replace(/'/g, "'\\''")}'`;
       }
-      cmd += ' 2>/dev/null || true';
+      cmd += ` 2>/dev/null; rm -f ${patternFile}`;
 
       const response = await sandbox.process.executeCommand(cmd, cwd, undefined, 30);
       const lines = response.result.trim().split('\n').filter(Boolean);
+      const truncated = lines.length > 100;
       return {
         matches: lines.slice(0, 100),
         totalMatches: lines.length,
-        truncated: lines.length > 100,
+        truncated,
+        ...(truncated ? { warning: `Results truncated: showing 100 of ${lines.length} matches. Narrow your search pattern or path.` } : {}),
       };
     },
   }),

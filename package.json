@@ -1,6 +1,6 @@
 {
   "name": "@dillion-ai/open-agent",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Provider-agnostic agent SDK with sandboxed code execution",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -16,8 +16,10 @@
   "files": ["dist", "scripts"],
   "scripts": {
     "build": "tsup",
+    "test": "npm run build && node --test test/*.test.mjs",
     "typecheck": "tsc --noEmit",
-    "dev": "tsup --watch"
+    "dev": "tsup --watch",
+    "prepublishOnly": "npm run build && npm run typecheck && npm test"
   },
   "peerDependencies": {
     "ai": ">=6.0.0"
@@ -43,5 +45,17 @@
   "bugs": {
     "url": "https://github.com/dillion-ai/open-agent/issues"
   },
+  "keywords": [
+    "agent",
+    "ai",
+    "sdk",
+    "llm",
+    "sandbox",
+    "code-execution",
+    "provider-agnostic",
+    "tool-use",
+    "open-agent",
+    "dillion"
+  ],
   "license": "MIT"
 }

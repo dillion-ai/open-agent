@@ -1,14 +1,21 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 import type { Skill } from '../types.js';
 
 function getBuiltinsDir(): string {
-  // Works in both ESM and CJS — tsup bundles into dist/, builtins live at dist/skills/builtins/
-  const dir = typeof __dirname !== 'undefined'
-    ? __dirname
-    : path.dirname(new URL(import.meta.url).pathname);
-  return path.resolve(dir, 'skills/builtins');
+  const dir =
+    typeof __dirname !== 'undefined'
+      ? __dirname
+      : path.dirname(fileURLToPath(import.meta.url));
+
+  const candidates = [
+    path.resolve(dir, 'builtins'),
+    path.resolve(dir, 'skills/builtins'),
+  ];
+
+  return candidates.find((candidate) => fs.existsSync(candidate)) ?? candidates[0];
 }
 
 const BUILTINS_DIR = getBuiltinsDir();
@@ -20,11 +27,11 @@ export type BuiltInSkillName = (typeof BUILTIN_SKILL_NAMES)[number];
 /**
  * Load built-in skills by name plus any custom skill paths.
  *
- * @param builtins - which built-in skills to enable (default: all)
+ * @param builtins - which built-in skills to enable (default: none)
  * @param customPaths - paths to user-provided .md files or directories of .md files
  */
 export function loadSkills(
-  builtins: BuiltInSkillName[] | boolean = true,
+  builtins: BuiltInSkillName[] | boolean = false,
   customPaths: string[] = [],
 ): Skill[] {
   const skills: Skill[] = [];
@@ -48,7 +55,10 @@ export function loadSkills(
     const resolved = path.resolve(p);
     const stat = fs.statSync(resolved, { throwIfNoEntry: false });
 
-    if (!stat) continue;
+    if (!stat) {
+      console.warn(`[open-agent] Skill path not found, skipping: ${resolved}`);
+      continue;
+    }
 
     if (stat.isDirectory()) {
       const files = fs.readdirSync(resolved).filter((f) => f.endsWith('.md'));
@@ -77,7 +87,8 @@ function parseSkillFile(filePath: string): Skill | null {
     if (!instructions) return null;
 
     return { name, description, instructions };
-  } catch {
+  } catch (err) {
+    console.warn(`[open-agent] Failed to parse skill file: ${filePath}`, err instanceof Error ? err.message : err);
     return null;
   }
 }

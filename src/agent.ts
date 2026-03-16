@@ -12,8 +12,8 @@ export function createAgent(config: OpenAgentConfig) {
 
   // Normalize skills config: string[] is legacy shorthand for { custom: [...] }
   const skillsConfig: SkillsConfig = Array.isArray(skillsOption)
-    ? { custom: skillsOption }
-    : skillsOption ?? {};
+    ? { builtins: false, custom: skillsOption }
+    : { builtins: false, ...(skillsOption ?? {}) };
 
   // Load skills synchronously (small local files)
   const skills = loadSkills(skillsConfig.builtins, skillsConfig.custom);
@@ -35,32 +35,40 @@ export function createAgent(config: OpenAgentConfig) {
     stopWhen: stepCountIs(maxSteps),
   });
 
-  const generate = async (options: RunOptions) => {
-    const params: Record<string, unknown> = {};
-    if (options.prompt) params.prompt = options.prompt;
-    if (options.messages) {
-      params.messages = options.messages.map((m) => ({
+  const buildParams = (options: RunOptions) => {
+    const hasPrompt = typeof options.prompt === 'string';
+    const hasMessages = Array.isArray(options.messages);
+
+    if (hasPrompt === hasMessages) {
+      throw new Error('RunOptions requires exactly one of "prompt" or "messages".');
+    }
+
+    if (hasPrompt) {
+      return {
+        prompt: options.prompt,
+        ...(options.abortSignal ? { abortSignal: options.abortSignal } : {}),
+      };
+    }
+
+    if (options.messages.length === 0) {
+      throw new Error('RunOptions.messages must contain at least one message.');
+    }
+
+    return {
+      messages: options.messages.map((m) => ({
         role: m.role,
         content: m.content,
-      }));
-    }
-    if (options.abortSignal) params.abortSignal = options.abortSignal;
+      })),
+      ...(options.abortSignal ? { abortSignal: options.abortSignal } : {}),
+    };
+  };
 
-    return agent.generate(params as any);
+  const generate = async (options: RunOptions) => {
+    return agent.generate(buildParams(options) as Parameters<typeof agent.generate>[0]);
   };
 
   const stream = async (options: RunOptions) => {
-    const params: Record<string, unknown> = {};
-    if (options.prompt) params.prompt = options.prompt;
-    if (options.messages) {
-      params.messages = options.messages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      }));
-    }
-    if (options.abortSignal) params.abortSignal = options.abortSignal;
-
-    return agent.stream(params as any);
+    return agent.stream(buildParams(options) as Parameters<typeof agent.stream>[0]);
   };
 
   const uploadFiles = async (files: Array<{ path: string; content: string | Buffer }>) => {
