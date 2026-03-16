@@ -43,11 +43,12 @@ export function createAgent(config: OpenAgentConfig) {
       throw new Error('RunOptions requires exactly one of "prompt" or "messages".');
     }
 
+    const common: Record<string, unknown> = {};
+    if (options.abortSignal) common.abortSignal = options.abortSignal;
+    if (options.onStepFinish) common.onStepFinish = options.onStepFinish;
+
     if (hasPrompt) {
-      return {
-        prompt: options.prompt,
-        ...(options.abortSignal ? { abortSignal: options.abortSignal } : {}),
-      };
+      return { prompt: options.prompt, ...common };
     }
 
     if (options.messages.length === 0) {
@@ -59,7 +60,7 @@ export function createAgent(config: OpenAgentConfig) {
         role: m.role,
         content: m.content,
       })),
-      ...(options.abortSignal ? { abortSignal: options.abortSignal } : {}),
+      ...common,
     };
   };
 

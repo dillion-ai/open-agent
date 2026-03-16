@@ -36,12 +36,14 @@ export interface PromptRunOptions {
   prompt: string;
   messages?: never;
   abortSignal?: AbortSignal;
+  onStepFinish?: (event: any) => void | Promise<void>;
 }
 
 export interface MessageRunOptions {
   prompt?: never;
   messages: ChatMessage[];
   abortSignal?: AbortSignal;
+  onStepFinish?: (event: any) => void | Promise<void>;
 }
 
 export type RunOptions = PromptRunOptions | MessageRunOptions;

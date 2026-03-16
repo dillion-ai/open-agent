@@ -54,21 +54,29 @@ const result = await agent.generate({
 2. customers_chart.png — Bar chart of customer count by month with a trend line overlay.
    Use a matching dark theme, title "Customer Growth".
 
-Use matplotlib with tight_layout. Save at 300 DPI.`,
+Use matplotlib with tight_layout. Save at 300 DPI.
+
+After saving, verify both files exist by running: ls -la /home/daytona/mrr_arr_chart.png /home/daytona/customers_chart.png`,
 });
 
 console.log(result.text);
+console.log('Steps:', result.steps?.length);
 
 // Download both charts
-const files = await agent.downloadFiles([
+const chartPaths = [
   '/home/daytona/mrr_arr_chart.png',
   '/home/daytona/customers_chart.png',
-]);
+];
 
-for (const file of files) {
-  const name = file.path.split('/').pop()!;
-  fs.writeFileSync(name, file.content);
-  console.log(`Saved ${name} (${file.content.length} bytes)`);
+try {
+  const files = await agent.downloadFiles(chartPaths);
+  for (const file of files) {
+    const name = file.path.split('/').pop()!;
+    fs.writeFileSync(name, file.content);
+    console.log(`Saved ${name} (${file.content.length} bytes)`);
+  }
+} catch (e: any) {
+  console.error('Download failed:', e.message);
 }
 
 await agent.destroy();

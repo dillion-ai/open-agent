@@ -145,6 +145,39 @@ See [`examples/`](./examples):
 - **[upload-and-analyze.ts](./examples/upload-and-analyze.ts)** — upload, analyze, download spreadsheets
 - **[custom-skills.ts](./examples/custom-skills.ts)** — custom skill files
 
+## Benchmarking models
+
+The repository includes a benchmark harness for comparing multiple models on harder financial tasks:
+
+- chart creation from a complex Excel workbook via **matplotlib**
+- chart creation from the same workbook via **Recharts**
+- multi-step **Excel financial modeling** with scenario analysis, debt logic, and covenant checks
+
+Each run:
+
+- executes every task against every model in `BENCHMARK_MODELS`
+- stores per-run, per-task metrics in a SQLite database
+- downloads generated artifacts to a local output directory
+- validates chart data and financial outputs against deterministic expected values
+
+The benchmark lives at [`benchmarks/financial-benchmark.ts`](./benchmarks/financial-benchmark.ts).
+
+Build the package first so the benchmark can import `dist/`:
+
+```bash
+npm run build
+BENCHMARK_MODELS="provider/model-a,provider/model-b" \
+OPENROUTER_API_KEY=... \
+DAYTONA_API_KEY=... \
+node benchmarks/financial-benchmark.ts
+```
+
+Optional environment variables:
+
+- `BENCHMARK_RUN_DIR` — root directory for a single run (default: `./benchmarks/results/<timestamp>`)
+- `BENCHMARK_DB_PATH` — path to the SQLite database file (default: `<run dir>/benchmark-results.sqlite`)
+- `BENCHMARK_ARTIFACT_DIR` — directory for downloaded artifacts (default: `<run dir>/artifacts`)
+
 ## License
 
 MIT

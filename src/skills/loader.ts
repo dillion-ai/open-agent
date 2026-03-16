@@ -11,8 +11,8 @@ function getBuiltinsDir(): string {
       : path.dirname(fileURLToPath(import.meta.url));
 
   const candidates = [
-    path.resolve(dir, 'builtins'),
     path.resolve(dir, 'skills/builtins'),
+    path.resolve(dir, 'builtins'),
   ];
 
   return candidates.find((candidate) => fs.existsSync(candidate)) ?? candidates[0];
