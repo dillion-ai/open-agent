@@ -10,8 +10,8 @@ export interface SandboxConfig {
   target?: string;
   /** Sandbox language/runtime. Default: 'typescript' */
   language?: string;
-  /** Daytona snapshot name to use when creating a sandbox */
-  snapshot?: string;
+  /** Daytona snapshot name or Snapshot instance (from daytona.snapshot.get()) to use when creating a sandbox */
+  snapshot?: string | { name: string };
   /** Public image name or Daytona Image definition to use when creating a sandbox */
   image?: string | Image;
   /** Callback for image build/snapshot creation logs when `image` is used */

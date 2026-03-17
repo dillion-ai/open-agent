@@ -72,6 +72,35 @@ test('createSandboxManager passes snapshot name when configured', async () => {
   }
 });
 
+test('createSandboxManager accepts a Snapshot object and extracts its name', async () => {
+  const originalCreate = Daytona.prototype.create;
+  const sandbox = { id: 'sandbox-snapshot-obj' };
+  let createArgs;
+
+  Daytona.prototype.create = async function (params, options) {
+    createArgs = { params, options };
+    return sandbox;
+  };
+
+  try {
+    const snapshotObj = { name: 'my-awesome-snapshot', state: 'ready' };
+    const manager = createSandboxManager({
+      apiKey: 'test-key',
+      snapshot: snapshotObj,
+      language: 'python',
+    });
+
+    const created = await manager.getSandbox();
+    assert.equal(created, sandbox);
+    assert.deepEqual(createArgs, {
+      params: { snapshot: 'my-awesome-snapshot', language: 'python' },
+      options: undefined,
+    });
+  } finally {
+    Daytona.prototype.create = originalCreate;
+  }
+});
+
 test('createSandboxManager passes image config and snapshot log handler when configured', async () => {
   const originalCreate = Daytona.prototype.create;
   const sandbox = { id: 'sandbox-image' };

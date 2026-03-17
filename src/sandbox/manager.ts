@@ -27,6 +27,11 @@ export function createSandboxManager(config: SandboxConfig): SandboxManager {
       target: config.target,
     });
 
+    const snapshotName =
+      typeof config.snapshot === 'string'
+        ? config.snapshot
+        : config.snapshot?.name;
+
     const createSandbox = config.image
       ? daytona.create(
           {
@@ -38,7 +43,7 @@ export function createSandboxManager(config: SandboxConfig): SandboxManager {
           },
         )
       : daytona.create({
-          snapshot: config.snapshot,
+          snapshot: snapshotName,
           language: config.language ?? 'typescript',
         });
 
