@@ -13,9 +13,9 @@ const openrouter = createOpenRouter({
 });
 
 const agent = createAgent({
-  model: openrouter('minimax/minimax-m2.5:exacto'),
+  model: openrouter('minimax/minimax-m2.5:nitro'),
   instructions: 'You are a data visualization expert. Work in /home/daytona.',
-  tools: ['bash', 'read', 'write', 'edit', 'glob', 'grep'],
+  tools: ['bash', 'read', 'write', 'edit', 'glob', 'grep', 'python'],
   skills: { builtins: ['xlsx'] },
   sandbox: {
     apiKey: process.env.DAYTONA_API_KEY,

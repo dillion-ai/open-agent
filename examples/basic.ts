@@ -6,9 +6,9 @@ const openrouter = createOpenRouter({
 });
 
 const agent = createAgent({
-  model: openrouter('z-ai/glm-4.7-flash'),
+  model: openrouter('minimax/minimax-m2.5:exacto'),
   instructions: 'You are a coding assistant. Work in the /home/daytona directory.',
-  tools: ['bash', 'read', 'write', 'edit', 'glob', 'grep'],
+  tools: ['bash', 'read', 'write', 'edit', 'glob', 'grep', 'python'],
   sandbox: {
     apiKey: process.env.DAYTONA_API_KEY,
   },

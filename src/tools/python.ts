@@ -15,10 +15,15 @@ export const createPythonTool: ToolFactory = (getSandbox: GetSandbox, _cwd: stri
     }),
     execute: async ({ code, timeout }) => {
       const sandbox = await getSandbox();
-      const response = await sandbox.process.codeRun(code, undefined, timeout ?? 120);
+      const result = await sandbox.codeInterpreter.runCode(code, {
+        timeout: timeout ?? 120,
+      });
+      const output = [result.stdout, result.stderr].filter(Boolean).join('\n').trim();
       return {
-        result: response.result,
-        exitCode: response.exitCode,
+        result: result.error
+          ? `${output ? output + '\n\n' : ''}[Python error] ${result.error.name}: ${result.error.value}${result.error.traceback ? '\n' + result.error.traceback : ''}`
+          : output || '(no output)',
+        exitCode: result.error ? 1 : 0,
       };
     },
   }),
