@@ -57,7 +57,7 @@ This SDK is intentionally small. It provides the wiring between the AI SDK's `To
 - **Streaming** — first-class streaming support via the AI SDK
 - **Skills** — optional markdown instruction files for domain-specific workflows (e.g. Excel generation)
 
-The default Daytona snapshots already include many common Python packages, including `pandas` and `matplotlib`, but not `openpyxl`. The `python` tool bootstraps `pandas`, `openpyxl`, and `matplotlib` on first use so spreadsheet workflows still work without a manual `pip install`. If you want `openpyxl` baked in before the sandbox starts, create the sandbox from a custom Daytona snapshot or image instead.
+The default Daytona snapshots already include many common Python packages, including `pandas` and `matplotlib`, but not `openpyxl`. The `python` tool bootstraps `openpyxl` on first use when needed so spreadsheet workflows still work without a manual `pip install`. If you want `openpyxl` baked in before the sandbox starts, create the sandbox from a custom Daytona snapshot or image instead.
 
 The SDK doesn't impose prompt templates, memory systems, RAG pipelines, or agent architectures. You bring those.
 
@@ -71,7 +71,7 @@ The SDK doesn't impose prompt templates, memory systems, RAG pipelines, or agent
 | `edit` | Make targeted edits to files       |
 | `glob` | Find files by pattern              |
 | `grep` | Search file contents with regex    |
-| `python` | Execute Python code with spreadsheet/chart packages bootstrapped on first use |
+| `python` | Execute Python code with `openpyxl` bootstrapped on first use when needed |
 
 ## Skills
 
