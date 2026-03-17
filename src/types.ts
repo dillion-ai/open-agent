@@ -1,5 +1,5 @@
 import type { LanguageModel, ToolSet } from 'ai';
-import type { Sandbox } from '@daytonaio/sdk';
+import type { Image, Sandbox } from '@daytonaio/sdk';
 import type { BuiltInSkillName } from './skills/loader.js';
 
 export type BuiltInToolName = 'bash' | 'read' | 'write' | 'edit' | 'glob' | 'grep' | 'python';
@@ -10,6 +10,12 @@ export interface SandboxConfig {
   target?: string;
   /** Sandbox language/runtime. Default: 'typescript' */
   language?: string;
+  /** Daytona snapshot name to use when creating a sandbox */
+  snapshot?: string;
+  /** Public image name or Daytona Image definition to use when creating a sandbox */
+  image?: string | Image;
+  /** Callback for image build/snapshot creation logs when `image` is used */
+  onSnapshotCreateLogs?: (chunk: string) => void;
   /** Pass an existing Sandbox instance to reuse it instead of creating a new one */
   instance?: Sandbox;
 }

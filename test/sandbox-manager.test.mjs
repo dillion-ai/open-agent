@@ -43,3 +43,61 @@ test('createSandboxManager deduplicates concurrent creation and cleans up once',
     Daytona.prototype.delete = originalDelete;
   }
 });
+
+test('createSandboxManager passes snapshot name when configured', async () => {
+  const originalCreate = Daytona.prototype.create;
+  const sandbox = { id: 'sandbox-snapshot' };
+  let createArgs;
+
+  Daytona.prototype.create = async function (params, options) {
+    createArgs = { params, options };
+    return sandbox;
+  };
+
+  try {
+    const manager = createSandboxManager({
+      apiKey: 'test-key',
+      snapshot: 'python-tools',
+      language: 'python',
+    });
+
+    const created = await manager.getSandbox();
+    assert.equal(created, sandbox);
+    assert.deepEqual(createArgs, {
+      params: { snapshot: 'python-tools', language: 'python' },
+      options: undefined,
+    });
+  } finally {
+    Daytona.prototype.create = originalCreate;
+  }
+});
+
+test('createSandboxManager passes image config and snapshot log handler when configured', async () => {
+  const originalCreate = Daytona.prototype.create;
+  const sandbox = { id: 'sandbox-image' };
+  const onSnapshotCreateLogs = () => {};
+  let createArgs;
+
+  Daytona.prototype.create = async function (params, options) {
+    createArgs = { params, options };
+    return sandbox;
+  };
+
+  try {
+    const manager = createSandboxManager({
+      apiKey: 'test-key',
+      image: 'python:3.11-slim',
+      language: 'python',
+      onSnapshotCreateLogs,
+    });
+
+    const created = await manager.getSandbox();
+    assert.equal(created, sandbox);
+    assert.deepEqual(createArgs, {
+      params: { image: 'python:3.11-slim', language: 'python' },
+      options: { onSnapshotCreateLogs },
+    });
+  } finally {
+    Daytona.prototype.create = originalCreate;
+  }
+});

@@ -1,4 +1,5 @@
 export { createAgent } from './agent.js';
+export { Image } from '@daytonaio/sdk';
 export type {
   OpenAgentConfig,
   SandboxConfig,
@@ -21,6 +22,7 @@ export {
   createEditTool,
   createGlobTool,
   createGrepTool,
+  createPythonTool,
   resolveTools,
 } from './tools/index.js';
 

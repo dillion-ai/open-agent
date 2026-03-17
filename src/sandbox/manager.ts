@@ -27,8 +27,22 @@ export function createSandboxManager(config: SandboxConfig): SandboxManager {
       target: config.target,
     });
 
-    sandboxPromise = daytona
-      .create({ language: config.language ?? 'typescript' })
+    const createSandbox = config.image
+      ? daytona.create(
+          {
+            image: config.image,
+            language: config.language ?? 'typescript',
+          },
+          {
+            onSnapshotCreateLogs: config.onSnapshotCreateLogs,
+          },
+        )
+      : daytona.create({
+          snapshot: config.snapshot,
+          language: config.language ?? 'typescript',
+        });
+
+    sandboxPromise = createSandbox
       .then((createdSandbox) => {
         sandbox = createdSandbox;
         return createdSandbox;

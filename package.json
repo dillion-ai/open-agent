@@ -1,6 +1,6 @@
 {
   "name": "@dillion-ai/open-agent",
-  "version": "0.1.",
+  "version": "0.1.7",
   "description": "Provider-agnostic agent SDK with sandboxed code execution",
   "type": "module",
   "main": "./dist/index.cjs",

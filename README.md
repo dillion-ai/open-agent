@@ -22,7 +22,7 @@ npm install @dillion-ai/open-agent ai
 
 ```ts
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { createAgent } from "@dillion-ai/open-agent";
+import { createAgent, Image } from "@dillion-ai/open-agent";
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY!,
@@ -57,6 +57,8 @@ This SDK is intentionally small. It provides the wiring between the AI SDK's `To
 - **Streaming** — first-class streaming support via the AI SDK
 - **Skills** — optional markdown instruction files for domain-specific workflows (e.g. Excel generation)
 
+The default Daytona snapshots already include many common Python packages, including `pandas` and `matplotlib`, but not `openpyxl`. The `python` tool bootstraps `pandas`, `openpyxl`, and `matplotlib` on first use so spreadsheet workflows still work without a manual `pip install`. If you want `openpyxl` baked in before the sandbox starts, create the sandbox from a custom Daytona snapshot or image instead.
+
 The SDK doesn't impose prompt templates, memory systems, RAG pipelines, or agent architectures. You bring those.
 
 ## Tools
@@ -69,6 +71,7 @@ The SDK doesn't impose prompt templates, memory systems, RAG pipelines, or agent
 | `edit` | Make targeted edits to files       |
 | `glob` | Find files by pattern              |
 | `grep` | Search file contents with regex    |
+| `python` | Execute Python code with spreadsheet/chart packages bootstrapped on first use |
 
 ## Skills
 
@@ -123,6 +126,9 @@ createAgent({
     apiUrl: "",             //   Custom API URL (optional)
     target: "",             //   Target region (optional)
     language: "typescript", //   Sandbox language/runtime (optional)
+    snapshot: "python-tools", // Named Daytona snapshot to use (optional)
+    image: Image.debianSlim("3.12").pipInstall(["pandas", "openpyxl", "matplotlib"]), // Public/custom image (optional)
+    onSnapshotCreateLogs: console.log, // Image build logs callback (optional)
     instance: sandbox,      //   Reuse an existing Sandbox (optional)
   },
   skills: {                 // Optional
@@ -131,6 +137,35 @@ createAgent({
   },
   maxSteps: 30,             // Max tool-use loop iterations
   cwd: "/home/daytona",    // Working directory in the sandbox
+});
+```
+
+Use a prebuilt Daytona snapshot when you already have one registered:
+
+```ts
+const agent = createAgent({
+  model,
+  tools: ["python"],
+  sandbox: {
+    apiKey: process.env.DAYTONA_API_KEY,
+    snapshot: "my-awesome-snapshot",
+    language: "python",
+  },
+});
+```
+
+Use a public image or declarative Daytona image when you want packages baked in up front:
+
+```ts
+const agent = createAgent({
+  model,
+  tools: ["python"],
+  sandbox: {
+    apiKey: process.env.DAYTONA_API_KEY,
+    language: "python",
+    image: Image.debianSlim("3.12").pipInstall(["pandas", "openpyxl"]),
+    onSnapshotCreateLogs: console.log,
+  },
 });
 ```
 
