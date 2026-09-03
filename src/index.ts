@@ -1,5 +1,5 @@
 export { createAgent } from './agent.js';
-export { Image } from '@daytonaio/sdk';
+export { Image } from '@daytona/sdk';
 export type {
   OpenAgentConfig,
   SandboxConfig,

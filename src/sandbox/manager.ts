@@ -1,4 +1,4 @@
-import { Daytona, type Sandbox } from '@daytonaio/sdk';
+import { Daytona, type Sandbox } from '@daytona/sdk';
 import type { SandboxConfig, GetSandbox } from '../types.js';
 
 export interface SandboxManager {
