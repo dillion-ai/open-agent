@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Daytona } from '@daytonaio/sdk';
+import { Daytona } from '@daytona/sdk';
 import { createSandboxManager } from '../dist/index.js';
 
 test('createSandboxManager deduplicates concurrent creation and cleans up once', async () => {
