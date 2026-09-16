@@ -38,8 +38,7 @@
     "ai": "^6.0.0",
     "better-sqlite3": "^12.8.0",
     "tsup": "^8.0.0",
-    "typescript": "^5.7.0",
-    "xlsx": "^0.18.5"
+    "typescript": "^5.7.0"
   },
   "homepage": "https://dillion.ai",
   "repository": {
